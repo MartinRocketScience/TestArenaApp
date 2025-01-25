@@ -4,8 +4,8 @@ from pages.base_page import BasePage
 
 
 class AddTaskPage(BasePage):
-    # URL
-    URL = "/TP/task_add"
+    # PATH
+    PATH = "/TP/task_add"
 
     def __init__(self):
         super().__init__()
@@ -21,7 +21,7 @@ class AddTaskPage(BasePage):
 
     def navigate_to_add_task(self):
         """Navigate to add task page"""
-        self.navigate_to(f"{self.config['base_url']}{self.URL}")
+        self.navigate_to(f"{self.config['base_url']}{self.PATH}")
 
     def enter_title(self, title):
         """Enter task title"""
