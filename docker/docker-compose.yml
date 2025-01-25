@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - ./TastArenaApp:/var/www/html
+      - ./application.ini:/var/www/html/application/configs/application.ini
+      - ./logs:/var/log
+      - ./debug_index.php:/var/www/html/public/index.php
+    depends_on:
+      - db
+    environment:
+      - APPLICATION_ENV=production
+      - DB_HOST=db
+      - DB_USER=testarena
+      - DB_PASSWORD=testarena123
+      - DB_NAME=testarena
+
+  db:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=testarena
+      - MYSQL_USER=testarena
+      - MYSQL_PASSWORD=testarena123
+      - MYSQL_ROOT_PASSWORD=root123
+      - MYSQL_ROOT_HOST=%
+    command: --default-authentication-plugin=mysql_native_password --sql-mode="NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./TastArenaApp/docs/change_log/testarena_db.sql:/docker-entrypoint-initdb.d/testarena_db.sql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_HOST=db
+      - PMA_USER=testarena
+      - PMA_PASSWORD=testarena123
+      - MYSQL_ROOT_PASSWORD=root123
+      - PMA_ARBITRARY=1
+    depends_on:
+      - db
+
+volumes:
+  mysql_data:
